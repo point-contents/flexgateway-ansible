@@ -1,0 +1,14 @@
+---
+
+- name: Echo nothing
+  hosts: none
+  become: false
+  gather_facts: false
+  tags: "update"
+
+  tasks: 
+  - name: Echo Cat
+    ansible.builtin.shell: |
+      echo "cat"
+    tags: "echoing"
+

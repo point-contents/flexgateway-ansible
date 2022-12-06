@@ -1,0 +1,10 @@
+---
+
+all:
+  children:
+    alma:
+      hosts:
+        170.64.138.65:
+        170.64.156.231:
+      vars:
+        ansible_user: root
