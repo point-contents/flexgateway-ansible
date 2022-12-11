@@ -1,0 +1,35 @@
+---
+
+- name: Enable Linger
+  ansible.builtin.shell:
+    loginctl enable-linger gateway
+
+- name: Stop Existing NGINX Container
+  containers.podman.podman_container:
+    name: nginx
+    state: stopped
+  ignore_errors: true
+
+
+- name: Create and Enable NGINX Container
+  containers.podman.podman_container:
+    name: nginx
+    image: docker.io/library/nginx:latest
+    state: started
+    detach: true
+    expose:
+      - 80
+    ports:
+      - 8080:80
+  tags: "running nginx container"
+  check_mode: false
+  ignore_errors: "{{ ansible_check_mode }}"
+  
+- name: Create and Enable NGINX Container
+  containers.podman.podman_container:
+    name: nginx
+    restart: true
+  tags: "restart_nginx"
+  check_mode: false
+  ignore_errors: "{{ ansible_check_mode }}"
+    
