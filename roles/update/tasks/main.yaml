@@ -1,0 +1,19 @@
+- name: Ensure All Packages Are Updated
+  ansible.builtin.package:
+    name: '*'
+    state: latest
+  register: dnf_status_result
+  changed_when: false
+  check_mode: false
+
+- name: Ensure Podman is Updated
+  ansible.builtin.package:
+    name: 'podman'
+    state: latest
+
+- name: Display all variables/facts known for the host
+  ansible.builtin.debug:
+    var: hostvars[inventory_hostname]
+    verbosity: 2
+  tags:
+  - "debug"
