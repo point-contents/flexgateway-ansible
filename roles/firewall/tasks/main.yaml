@@ -1,0 +1,38 @@
+---
+
+- name: Ensure Firewalld is Installed
+  ansible.builtin.package:
+    name: 'firewalld'
+    state: latest
+
+- name: Ensure Firewalld is Started 
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+  check_mode: false
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Enable HAProxy Stats Port
+  ansible.builtin.command: |
+    firewall-cmd --add-port=8080/tcp --permanent
+  check_mode: true
+
+- name: Enable HTTP Port in Firewalld
+  command:
+    firewall-cmd --add-port=80/tcp --permanent
+
+- name: Enable HTTPS Port in Firewalld
+  command: |
+    firewall-cmd --add-port=443/tcp --permanent
+
+- name: Restart Firewalld
+  command: |
+    firewall-cmd --reload
+
+- name: Ensure Firewalld is Active and Enabled
+  ansible.builtin.service:
+    name: firewalld
+    state: restarted
+    enabled: true
+  check_mode: false
+  ignore_errors: "{{ ansible_check_mode }}"
