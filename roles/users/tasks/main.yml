@@ -1,0 +1,33 @@
+---
+
+- name: Ensure Gateway Group Exists
+  ansible.builtin.group:
+    name: gateway
+    state: present
+  tags: "gateway group"
+
+- name: Create gateway user
+  ansible.builtin.user:
+    name: gateway
+    shell: /bin/bash
+    groups: gateway
+    append: true
+  tags: "gateway user"
+
+- name: Create .ssh folder
+  ansible.builtin.file:
+    path: /home/gateway/.ssh
+    state: directory
+    owner: gateway
+    group: gateway
+    mode: 0700
+  tags: "user access"
+
+- name: Copy SSH Key to New User
+  ansible.builtin.copy:
+    src: ~/.ssh/id_rsa.pub
+    dest: /home/gateway/.ssh/authorized_keys
+    owner: gateway
+    group: gateway
+    mode: 0700
+  tags: "ssh user auth"
