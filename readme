@@ -1,0 +1,6 @@
+make
+todo:
+https in haproxy
+fluentd listening to syslog
+haproxy logging to syslog
+firewall use group variables for port numbers
