@@ -1,88 +1,71 @@
 ---
 
-- name: Update System
-  hosts: none
+- name: Ensure Systems are Updated
+  hosts: all
   become: true
   gather_facts: false
-  tags: "update"
+  roles:
+    - update
+  tags: 
+    - "update"
+    - "all"
 
-  tasks: 
-  - name:  Update All Packages
-    ansible.builtin.package:
-      name: '*'
-      state: latest
-    tags: "yum update"
+# this should be using variables and etc
+- name: Configure Firewall Ports
+  hosts: haproxy
+  become: true
+  gather_facts: false
+  roles:
+    - firewall
+  tags:
+    - "firewall"
+    - "haproxy"
+
+- name: Ensure HAProxy is Installed and Configured
+  hosts: haproxy
+  become: true
+  roles:
+    - haproxy
+  tags: 
+    - "haproxy"
 
 - name: Create and Configure Gateway User
-  hosts: alma
+  hosts: all
   become: true
   gather_facts: false
-  tasks:
-  - name: Create gateway user
-    ansible.builtin.user:
-      name: gateway
-      shell: /bin/bash
-      # groups: wheel
-      append: true
-    tags: "gateway user"
+  roles:
+    - users
+  tags: 
+    - "user"
+    - "haproxy"
 
-  - name: Create .ssh folder
-    ansible.builtin.file:
-      path: /home/gateway/.ssh
-      state: directory
-      owner: gateway
-      group: gateway
-      mode: 0700
-    tags: "user access"
+- name: Ensure Fluentd Container Is installed
+  hosts: haproxy
+  become: true
+  gather_facts: false
+  roles:
+    - fluentd
+  tags:
+    - "fluentd"
+    - "haproxy"
 
-  - name: Copy SSH Key to New User
-    ansible.builtin.copy:
-      src: ~/.ssh/id_rsa.pub
-      dest: /home/gateway/.ssh/authorized_keys
-      owner: gateway
-      group: gateway
-      mode: 0700
-    tags: "ssh user auth"
+- name: Create and Run Nginx Container
+  hosts: gateway
+  become: true
+  become_user: gateway
+  gather_facts: false
+  roles:
+    - nginx
+  tags: 
+    - "nginx"
+    - "flex"
 
-
-- name: Fake Echo Role
+- name: Create and Run Gateway Container
   hosts: none
   become: true
   gather_facts: false
-  tasks:
-  - name: Fake role
-    ansible.builtin.include_role:
-      name: test
-    tags: "test role"
-
-- name: Create and Run Gateway Container
-  hosts: alma
-  become: true
-  gather_facts: false
-  tasks:
-  - name: Install Podman
-    ansible.builtin.package:
-      name: 'podman'
-      state: latest
-
-  - name: Pull Flex-Gateway Image
-    become_user: gateway
-    containers.podman.podman_image:
-      name: mulesoft/flex-gateway:1.1.0
-    tags: "pulling image"
-
-  - name: Create and Enable Container
-    become_user: gateway
-    containers.podman.podman_container:
-      name: flexgateway
-      image: flex-gateway:1.1.0
-      state: started
-      detach: true
-      exposed_ports:
-        - 80
-      ports:
-        - 4000:4000
-        - 9999:9999
-        - 15001:15001
-        - 15002:15002
-    tags: "running container"
+  roles:
+    - "flex"
+  tags: 
+    - "flex"
+  check_mode: true
