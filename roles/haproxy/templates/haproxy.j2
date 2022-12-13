@@ -10,7 +10,7 @@
 # Global settings
 #---------------------------------------------------------------------
 global
-	log			127.0.0.1:514 len 4096 local1
+    log		127.0.0.1:514 len 4096 local1
     chroot      /var/lib/haproxy
     pidfile     /var/run/haproxy.pid
     maxconn     4000
@@ -25,9 +25,9 @@ global
 defaults
     mode                    http
     option                  redispatch
-	option					httplog
+    option		    httplog
     retries                 3
-    log						global
+    log			    global
     option                  redispatch
     retries                 3
     timeout http-request    10s
@@ -46,6 +46,9 @@ frontend front
     use_backend		app
     default_backend app
 	log				global
+    use_backend			app
+    default_backend 		app
+    log				global
 	
 frontend stats
     bind *:8080
