@@ -2,13 +2,13 @@
 
 all:
   vars:
-    ansible_user: ec2-user
+    ansible_user: root
   children:
     haproxy:
       hosts:
-        : 
+        170.64.145.194: 
     gateway:
       hosts:
-        :
-        :
+        170.64.145.195:
+        170.64.145.197:
 

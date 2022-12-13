@@ -16,6 +16,19 @@
     dest: /etc/haproxy/haproxy.cfg
     mode: 0644
 
+- name: Copy Certs to Loadbalancer
+  ansible.builtin.copy:
+    src: '../files/certs/{{ item }}'
+    dest: /etc/ssl/{{ domain_name }}/
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+    - "{{ cert_name }}"
+  when: 
+    - vars['cert_name'] is defined
+    - vars['domain_name'] is defined
+
 - name: Start and Enable HAProxy
   ansible.builtin.service:
     name: haproxy

@@ -1,1 +1,2 @@
-cert_name: ""
+cert_name: "haproxy_cert.pem"
+domain_name: "puhard.com"

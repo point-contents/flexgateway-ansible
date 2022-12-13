@@ -2,6 +2,7 @@ playbook = playbook.yml
 inventory = inventory.yml
 command = ansible-playbook
 tags_flag = --tags
+vault_flat = --ask-vault-pass
 composed_command = ${command} -i ${inventory} ${playbook} ${tags_flag}
 
 debug: SHELL:=/bin/bash 
@@ -18,14 +19,11 @@ user:
 firewall:
 	${composed_command} firewall
 
-flex:
-	${composed_command} flex
-
 nginx:
 	${composed_command} nginx
 
 haproxy:
-	${composed_command} haproxy
+	${composed_command} haproxy ${vault_flat}
 
 tags:
 	${composed_command} all --list-tags

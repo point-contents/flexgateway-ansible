@@ -37,17 +37,6 @@
     - users
   tags: 
     - "user"
-    - "haproxy"
-
-- name: Ensure Fluentd Container Is installed
-  hosts: haproxy
-  become: true
-  gather_facts: false
-  roles:
-    - fluentd
-  tags:
-    - "fluentd"
-    - "haproxy"
 
 - name: Create and Run Nginx Container
   hosts: gateway
@@ -58,14 +47,3 @@
     - nginx
   tags: 
     - "nginx"
-    - "flex"
-
-- name: Create and Run Gateway Container
-  hosts: none
-  become: true
-  gather_facts: false
-  roles:
-    - "flex"
-  tags: 
-    - "flex"
-  check_mode: true

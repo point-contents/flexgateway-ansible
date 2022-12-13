@@ -42,7 +42,7 @@ defaults
 #---------------------------------------------------------------------
 frontend front
     bind			*:80
-    #bind			*:443 ssl crt /etc/ssl/certs/{{ cert_name }}
+    bind			*:443 ssl crt /etc/ssl/{{ domain_name }}/{{ cert_name }}
     use_backend		app
     default_backend app
 	log				global
