@@ -1,35 +1,34 @@
 playbook = playbook.yml
 inventory = inventory.yml
-command = ansible-playbook
 tags_flag = --tags
 vault_flat = --ask-vault-pass
-composed_command = ${command} -i ${inventory} ${playbook} ${tags_flag}
 
-debug: SHELL:=/bin/bash 
+ansible = ansible-playbook -i ${inventory} ${playbook} ${tags_flag}
+
 debug:
 	mv logs/ansible.log logs/ansible.old
-	${composed_command} "all,debug" -vv --check
+	${ansible} "all,debug" -vv --check
 
 patch:
-	${composed_command} update
+	${ansible} update
 
 user:
-	${composed_command} user
+	${ansible} user
 
 firewall:
-	${composed_command} firewall
+	${ansible} firewall
 
 nginx:
-	${composed_command} nginx
+	${ansible} nginx
 
 haproxy:
-	${composed_command} haproxy ${vault_flat}
+	${ansible} haproxy ${vault_flat}
 
 tags:
-	${composed_command} all --list-tags
+	${ansible} all --list-tags
 
 tasks:
-	${composed_command} all --list-tasks
+	${ansible} all --list-tasks
 
 all:
-	${composed_command} all
+	${ansible} all
